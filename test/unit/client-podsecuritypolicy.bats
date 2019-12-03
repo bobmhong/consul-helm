@@ -45,3 +45,36 @@ load _helpers
       yq -c '.spec.hostPorts' | tee /dev/stderr)
   [ "${actual}" = '[{"min":8500,"max":8500},{"min":8502,"max":8502},{"min":8301,"max":8301}]' ]
 }
+
+#--------------------------------------------------------------------
+# client.dataDirectoryHostPath
+
+@test "client/PodSecurityPolicy: allows hostPath volume by default" {
+  cd `chart_dir`
+  # Test that hostPath is an allowed volume type.
+  local actual=$(helm template \
+      -x templates/client-podsecuritypolicy.yaml  \
+      --set 'global.enablePodSecurityPolicies=true' \
+      . | tee /dev/stderr |
+      yq '.spec.volumes | any(contains("hostPath"))' | tee /dev/stderr)
+  [ "${actual}" = 'true' ]
+
+  # Test that the path we're allowed to write to is the right one.
+  local actual=$(helm template \
+      -x templates/client-podsecuritypolicy.yaml  \
+      --set 'global.enablePodSecurityPolicies=true' \
+      . | tee /dev/stderr |
+      yq -r '.spec.allowedHostPaths[0].pathPrefix' | tee /dev/stderr)
+  [ "${actual}" = '/opt/consul' ]
+}
+
+@test "client/PodSecurityPolicy: disallows hostPath volume when client.dataDirectoryHostPath is empty" {
+  cd `chart_dir`
+  local actual=$(helm template \
+      -x templates/client-podsecuritypolicy.yaml  \
+      --set 'global.enablePodSecurityPolicies=true' \
+      --set 'client.dataDirectoryHostPath=' \
+      . | tee /dev/stderr |
+      yq '.spec.volumes | any(contains("hostPath"))' | tee /dev/stderr)
+  [ "${actual}" = 'false' ]
+}

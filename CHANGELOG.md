@@ -6,6 +6,13 @@ BREAKING CHANGES
      
      If you do not wish to enable gRPC for clients, set `client.grpc` to
      `false` in your local values file.
+  * Consul client DaemonSet now uses a [hostPath mount](https://kubernetes.io/docs/concepts/storage/volumes/#hostpath)
+    for its data directory by default. Previously it used an [emptyDir](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir).
+    This change was made to ensure that when a Consul client Pod is deleted,
+    e.g. during a Consul version upgrade, it does not lose its Connect service
+    registrations. [[GH-298](https://github.com/hashicorp/consul-helm/pull/298)]
+    
+    To opt out and continue using the `emptyDir`, set `client.dataDirectoryHostPath` to `null`.
 
 ## 0.12.0 (Oct 28, 2019)
 
