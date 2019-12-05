@@ -1,0 +1,17 @@
+apiVersion: v1
+entries:
+  consul:
+  - apiVersion: v1
+    created: "2019-12-05T16:50:59.502845-05:00"
+    description: Install and configure Consul on Kubernetes.
+    digest: f98d779fb33e8ba45124abd3585ec2a9ab564f500e8e2d0c99042ded9f439331
+    home: https://www.consul.io
+    name: consul
+    sources:
+    - https://github.com/hashicorp/consul
+    - https://github.com/hashicorp/consul-helm
+    - https://github.com/hashicorp/consul-k8s
+    urls:
+    - https://bobmhong.github.io/helm-consul/consul-0.12.0.tgz
+    version: 0.12.0
+generated: "2019-12-05T16:50:59.500332-05:00"
